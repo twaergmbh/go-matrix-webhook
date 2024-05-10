@@ -14,7 +14,7 @@ import (
 
 type WebhookPayload struct {
 	Message string `json:"message"`
-	RoomID  string `json:"room_id"`
+	UserID  string `json:"user_id"`
 }
 
 type ResponseData struct {
@@ -54,21 +54,22 @@ func NewHandler(m matrix.Matrix, secret string) func(http.ResponseWriter, *http.
 			return
 		}
 
-		err = m.JoinRoom(payload.RoomID)
+		// Fetch or create a room with the given user ID
+		roomID, err := m.CreateOrFindPrivateChat(payload.UserID)
 		if err != nil {
-			log.Error().Str("room_id", payload.RoomID).Err(err).Msg(errJoinRoomError)
+			log.Error().Str("user_id", payload.UserID).Err(err).Msg(errJoinRoomError)
 			sendResponse(w, http.StatusInternalServerError, errJoinRoomError)
 			return
 		}
 
-		err = m.SendMessage(payload.RoomID, payload.Message)
+		err = m.SendMessage(roomID, payload.Message)
 		if err != nil {
-			log.Error().Str("room_id", payload.RoomID).Err(err).Msg(errSendMessageError)
+			log.Error().Str("room_id", roomID).Err(err).Msg(errSendMessageError)
 			sendResponse(w, http.StatusOK, errSendMessageError)
 			return
 		}
 
-		log.Debug().Str("room_id", payload.RoomID).Msg(successSent)
+		log.Debug().Str("room_id", roomID).Msg(successSent)
 		sendResponse(w, http.StatusOK, "")
 	}
 }

@@ -1,0 +1,19 @@
+###
+
+# curl -X POST -H 'X-Secret: 121212' -H "Content-Type: application/json" -d '{"message": "<your_message>", "room_id": "!mpjPPwcKsDovOXuqNH:matrix-prime.twaer.dev"}' "http://localhost:2222"
+POST http://localhost:8080
+X-Secret: xx
+Content-Type: application/json
+
+{
+  "message": "xx",
+  "UserID": "@whatsapp_xx:matrixxx"
+}
+
+
+
+###  //"room_id": "!mpjPPwcKsDovOXuqNH:matrix-prime.twaer.dev"
+
+
+###
+
